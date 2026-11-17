@@ -1,111 +1,130 @@
 # Digital CV & Career Portfolio
 
-**Personal Website — Akbar Tantu**
-
-Welcome to my digital CV and professional portfolio, a centralized space to showcase my professional journey, education, technical skills, organizational involvement, and selected projects.
-
-Unlike a traditional resume, this website provides a more comprehensive view of my experiences, contributions, and professional development, supported by relevant project documentation and evidence where appropriate.
+Public digital CV for Muhammad Akbar Tantu. The site presents work experience, education, skills, community involvement, and project case studies in English and Bahasa Indonesia.
 
 **Website:** https://akbartantu.github.io
 
----
+## Languages
 
-## About This Website
-
-This website serves as my digital professional profile and career portfolio, featuring:
-
-- **Professional Profile** — Background, career interests, and areas of expertise.
-- **Work Experience** — Professional roles, responsibilities, and contributions.
-- **Education** — Academic background and relevant learning experiences.
-- **Skills & Expertise** — Technical, analytical, business, and interpersonal skills.
-- **Organizations & Leadership** — Organizational responsibilities and leadership experiences.
-- **Volunteering & Community** — Teaching, mentoring, facilitation, and community involvement.
-- **Projects & Portfolio** — Selected initiatives, project contributions, outcomes, and lessons learned.
-- **Supporting Evidence** — Approved documentation and visual materials supporting selected experiences.
+- English (`en`) is the default.
+- Bahasa Indonesia (`id`) is available from the **EN | ID** control in the header.
+- The choice is saved in `localStorage` under `portfolio-language`.
+- A shared link can set the language with `?lang=en` or `?lang=id`.
+- Official names stay as written. Company, university, program, and product names are not translated. Official role and degree titles are not rewritten.
 
 ## Technology
 
-The website is built using a lightweight, static architecture:
-
-- HTML5
-- CSS3
+- HTML
+- CSS
 - Vanilla JavaScript
-- GitHub Pages for hosting
+- GitHub Pages
 
-The current version does not require a backend server or external database.
+There is no backend, database, or translation API. The site is a static GitHub Pages project.
 
-## Project Structure
+## Folder structure
 
-    akbartantu.github.io/
-    ├── index.html
-    └── README.md
+```text
+index.html                  Page shell, metadata, and navigation
+assets/css/                 Base, layout, and component styles
+assets/data/                Profile, career records, projects, and UI copy
+assets/js/                  Language, rendering, and page behavior
+assets/favicon.svg          Site icon
+assets/evidence/            Approved public evidence files only
+tests/check-content.mjs     Content and privacy checks
+```
 
-`index.html` contains the public website, while `README.md` provides project documentation.
+`assets/css/style.css` and `assets/js/theme.js` from the earlier template are not used. The live page is `index.html`.
 
-Additional asset directories may be introduced as the website evolves.
+## Local development
 
-## Local Development
+1. Clone the repository.
+2. From the repository root, start a static server:
 
-1. Clone or download this repository.
-2. Open `index.html` using Chrome, Edge, or another modern browser.
-3. Review the website and make the necessary changes.
-4. Test the updated content and functionality locally.
-5. Commit and push the changes to GitHub.
+```bash
+python -m http.server 8080
+```
 
-## Deployment
+3. Open `http://localhost:8080`.
+4. Run the content checks:
 
-This website is hosted using GitHub Pages.
+```bash
+node tests/check-content.mjs
+```
 
-To publish updates:
+## How translations work
 
-1. Commit changes to the `main` branch.
-2. Open the repository's **Settings → Pages**.
-3. Ensure the deployment source is configured to use the `main` branch and root directory.
-4. Verify the latest deployment through GitHub Actions or the Pages settings.
-5. Visit https://akbartantu.github.io to review the published website.
+Interface labels live in `assets/data/ui.js` as `en` and `id` dictionaries.
 
-## Portfolio & Evidence Principles
+Career text lives beside the record it describes:
 
-Portfolio content follows these principles:
+```javascript
+summary: {
+  en: "...",
+  id: "..."
+}
+```
 
-1. **Authenticity** — Professional experiences and contributions must reflect actual involvement.
-2. **Traceability** — Supporting evidence should be linked to the specific claims it supports.
-3. **Accuracy** — Results and achievements must not be exaggerated or fabricated.
-4. **Transparency** — Unverified outcomes and limitations should be clearly distinguished from confirmed results.
-5. **Confidentiality** — Internal business information must not be disclosed without authorization.
+A company, degree, or role title that must stay official is a single string, not a translation object. If a translation is missing, the page falls back to English.
 
-Evidence may include approved screenshots, certificates, project documentation, activity photographs, and other relevant materials.
+`home.headline` and `home.summary` are `profile.headline` and `profile.summary` in `assets/data/profile.js`, so the public wording has one source.
 
-## Privacy & Security
+## How to update content
 
-This repository is intended for public viewing.
+Edit the record in `assets/data/` and keep the same `id`. Add both `en` and `id` for any sentence. Do not change an official title or organization string unless the wording is confirmed.
 
-- Do not commit passwords, API keys, authentication tokens, or credentials.
-- Do not upload confidential company documents, customer information, internal system details, or restricted project materials.
-- Review images and documents for sensitive information before publishing.
-- Only publish materials that are owned by the author or authorized for public distribution.
-- Do not treat client-side storage or hidden interface elements as secure storage for private information.
-- GitHub Pages does not provide a private database or document-level authentication for this website.
+Experience is listed from the most recent role. Project pages read `assets/data/projects.js`.
 
-Private assessment records, competency evidence matrices, and restricted professional documentation should be maintained outside the public repository in an appropriately secured environment.
+## Photographs and evidence
 
-## Current Development Priorities
+No profile photograph is published. The monogram is a placeholder.
 
-- [ ] Complete and verify professional profile information.
-- [ ] Upload an appropriate professional profile photograph.
-- [ ] Review work experience and organizational history.
-- [ ] Refine skills and areas of expertise.
-- [ ] Add project-specific contributions and outcomes.
-- [ ] Attach approved supporting evidence.
-- [ ] Improve mobile responsiveness and accessibility.
-- [ ] Review published content for accuracy and confidentiality.
+To add evidence:
+
+1. Put only an approved file in `assets/evidence/`. Use a simple file name such as `dashboard-note.png`.
+2. Add a record to `CV.evidence` in `assets/data/activities.js`:
+
+```javascript
+{
+  id: "EVD-001",
+  projectId: "PORT-001",
+  approved: true,
+  title: { en: "...", id: "..." },
+  type: { en: "Note", id: "Catatan" },
+  date: { en: "2025", id: "2025" },
+  description: { en: "...", id: "..." },
+  demonstrates: { en: "...", id: "..." },
+  image: "assets/evidence/dashboard-note.png"
+}
+```
+
+Records with `approved: false` are not shown. Do not commit internal documents, customer information, network diagrams, or unapproved screenshots.
+
+## GitHub Pages
+
+The workflow in `.github/workflows/static.yml` deploys pushes to `main`. This feature branch is not deployed automatically.
+
+To publish after review:
+
+1. Merge the reviewed branch into `main`.
+2. Confirm GitHub Pages still deploys the repository root.
+3. Check https://akbartantu.github.io in a private window.
+
+## Privacy and security
+
+Everything in this repository is public. `localStorage` only remembers the language choice. It is not a privacy boundary.
+
+Do not commit credentials, private contact details, internal files, or assessment notes. A public email address is omitted because none was supplied for publication. Hidden markup is not access control.
+
+## Known limitations
+
+- Language switching is done in the browser. Crawlers that do not run JavaScript receive the English shell, not a separate Indonesian URL. This is not full multilingual SEO.
+- LinkedIn could not be read while this version was prepared. Facts come from the existing repository unless noted below.
+- The public employer label remains **National Telecommunications Company**, as already published. Examples in the update brief used "Telkom Indonesia", and the GitHub profile company field says "UNSW". Those were not substituted.
+- Spoken-language proficiency, Foodhub, and Mata Garuda Australia New Zealand are not in the repository and were not added.
+- No professional certification or award is listed. The UNSW degree is shown as an academic degree, not as a professional license.
+- No approved project evidence files are published yet.
+- The in-browser editor from the previous page is not part of this public site. Edit the data files instead. The old page remains in git history.
 
 ## Disclaimer
 
-This is a personal professional portfolio. The views, experiences, and opinions expressed here are personal and do not necessarily represent those of current or former employers, educational institutions, or affiliated organizations.
-
-All company-related examples are subject to applicable confidentiality and information security requirements.
-
----
-
-© 2026 Akbar Tantu. All rights reserved.
+This is a personal portfolio. It does not speak for employers, universities, or other organizations.
