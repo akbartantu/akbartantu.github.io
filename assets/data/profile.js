@@ -3,6 +3,13 @@
 
   CV.profile = {
     name: "Muhammad Akbar Tantu",
+    photo: {
+      src: "",
+      alt: {
+        en: "Portrait of Muhammad Akbar Tantu",
+        id: "Potret Muhammad Akbar Tantu"
+      }
+    },
     headline: {
       en: "Cybersecurity Specialist · Business Analytics · Digital Operations & Innovation",
       id: "Spesialis Keamanan Siber · Analitik Bisnis · Operasi Digital dan Inovasi"

@@ -162,5 +162,5 @@
   ];
 
   CV.recognitions = [];
-  CV.evidence = [];
+  /* Approved public evidence lives in assets/data/evidence.js. */
 })();

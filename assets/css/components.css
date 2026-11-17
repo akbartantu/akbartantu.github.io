@@ -109,16 +109,80 @@
   background: var(--white);
 }
 
-.evidence-card img, .evidence-fallback {
+.evidence-media, .evidence-card img, .evidence-fallback {
   width: 100%;
   height: 140px;
   object-fit: cover;
   background: var(--soft);
 }
 
+.evidence-media { overflow: hidden; }
+
+.evidence-media img { display: block; height: 100%; }
+
 .evidence-fallback { display: grid; place-items: center; color: var(--navy); }
 
-.evidence-card div { padding: 12px; }
+.evidence-copy { padding: 12px; }
+
+.evidence-stack { grid-template-columns: 1fr; }
+
+.evidence-block { margin-top: 12px; }
+
+.evidence-note { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+
+.evidence-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+}
+
+.evidence-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  background: rgba(16, 36, 81, 0.55);
+  cursor: pointer;
+}
+
+.evidence-dialog {
+  position: relative;
+  z-index: 1;
+  width: min(720px, 100%);
+  max-height: min(88vh, 900px);
+  overflow: auto;
+  border-radius: 16px;
+  background: var(--white);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+.evidence-dialog article { padding: 20px; }
+
+body.evidence-open { overflow: hidden; }
+
+.evidence-dialog-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.evidence-figure { margin: 0 0 12px; }
+
+.evidence-figure img {
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  background: var(--soft);
+  border-radius: 12px;
+}
+
+.evidence-figure.evidence-fallback { height: 160px; }
 
 .back { display: inline-block; margin-bottom: 12px; color: var(--muted); font-weight: 700; text-decoration: none; }
 
@@ -130,8 +194,13 @@
   .contact-list { flex-direction: column; }
 }
 
+@media (max-width: 640px) {
+  .evidence-dialog { width: calc(100% - 16px); }
+  .evidence-dialog-head { align-items: stretch; flex-direction: column; }
+}
+
 @media print {
-  .topbar, .actions, .menu-toggle, .lang-switch { display: none !important; }
+  .topbar, .actions, .menu-toggle, .lang-switch, .evidence-layer { display: none !important; }
   .entry-panel[hidden] { display: block !important; }
   body { background: white; }
   .panel, .entry, .project-card { box-shadow: none; }

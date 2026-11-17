@@ -1,6 +1,7 @@
 (function () {
   const CV = (window.CV = window.CV || {});
   let menuOpen = false;
+  let evidenceTrigger = null;
 
   function main() {
     return document.getElementById("content");
@@ -88,6 +89,61 @@
       else scrollToHash();
     }
     markCurrent();
+    bindFallbacks(main());
+    mountEvidenceDialog(false);
+  }
+
+  function bindFallbacks(scope) {
+    (scope || document).querySelectorAll("img[data-fallback]").forEach(function (img) {
+      img.addEventListener("error", function onError() {
+        img.removeEventListener("error", onError);
+        if (img.getAttribute("data-fallback") === "portrait") {
+          const parent = img.parentElement;
+          if (!parent) return;
+          parent.setAttribute("role", "img");
+          parent.setAttribute("aria-label", img.getAttribute("data-fallback-label") || "");
+          parent.innerHTML = '<span aria-hidden="true">AT</span>';
+          return;
+        }
+        const slot = img.parentElement;
+        if (!slot) return;
+        slot.classList.add("evidence-fallback");
+        slot.innerHTML = CV.icon("document", 28);
+      });
+    });
+  }
+
+  function removeEvidenceDialog() {
+    const dialog = document.getElementById("evidence-dialog");
+    if (dialog) dialog.remove();
+    document.body.classList.toggle("evidence-open", Boolean(CV.openEvidenceId));
+  }
+
+  function closeEvidence() {
+    const trigger = evidenceTrigger;
+    CV.openEvidenceId = "";
+    evidenceTrigger = null;
+    removeEvidenceDialog();
+    if (trigger && document.contains(trigger)) trigger.focus();
+  }
+
+  function mountEvidenceDialog(moveFocus) {
+    removeEvidenceDialog();
+    if (!CV.openEvidenceId || typeof CV.render.evidenceDialog !== "function") return;
+    const html = CV.render.evidenceDialog(CV.openEvidenceId);
+    if (!html) {
+      CV.openEvidenceId = "";
+      document.body.classList.remove("evidence-open");
+      return;
+    }
+    document.body.insertAdjacentHTML("beforeend", html);
+    document.body.classList.add("evidence-open");
+    const dialog = document.getElementById("evidence-dialog");
+    if (!dialog) return;
+    bindFallbacks(dialog);
+    if (!moveFocus) return;
+    const close = dialog.querySelector("[data-evidence-dismiss]");
+    if (close) close.focus();
   }
 
   function setLanguage(next) {
@@ -105,6 +161,17 @@
     const langButton = event.target.closest("[data-set-lang]");
     if (langButton) {
       setLanguage(langButton.getAttribute("data-set-lang"));
+      return;
+    }
+    const openEvidence = event.target.closest("[data-open-evidence]");
+    if (openEvidence) {
+      evidenceTrigger = openEvidence;
+      CV.openEvidenceId = openEvidence.getAttribute("data-open-evidence") || "";
+      mountEvidenceDialog(true);
+      return;
+    }
+    if (event.target.closest("[data-close-evidence]")) {
+      closeEvidence();
       return;
     }
     const toggle = event.target.closest("[data-expand]");
@@ -126,6 +193,10 @@
   });
 
   document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && CV.openEvidenceId) {
+      closeEvidence();
+      return;
+    }
     if (event.key === "Escape" && menuOpen) {
       menuOpen = false;
       syncMenu();
@@ -136,6 +207,8 @@
 
   window.addEventListener("hashchange", function () {
     menuOpen = false;
+    CV.openEvidenceId = "";
+    evidenceTrigger = null;
     syncMenu();
     paint(false);
   });
@@ -144,6 +217,7 @@
 
   CV.i18n.init();
   CV.openIds = new Set();
+  CV.openEvidenceId = "";
   applyChrome();
   paint(false);
   window.addEventListener("load", scrollToHash);

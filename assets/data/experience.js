@@ -1,10 +1,8 @@
 (function () {
   const CV = (window.CV = window.CV || {});
 
-  /* Public employer label from the existing site. Do not rename until confirmed.
-     This task's examples use "Telkom Indonesia". The GitHub profile company
-     field says "UNSW". LinkedIn could not be checked. */
-  const EMPLOYER = "National Telecommunications Company";
+  /* Legal name, stored once and shown in every language without translation. */
+  const EMPLOYER = "PT Telkom Indonesia";
 
   CV.experience = [
     {
