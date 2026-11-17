@@ -20,15 +20,8 @@
 
   function evidenceCards(project) {
     const items = CV.visibleEvidence(project.id);
-    if (!items.length) return '<p class="empty">' + CV.esc(CV.i18n.t("case.evidenceEmpty")) + "</p>";
-    return '<div class="evidence-grid">' + items.map(function (item) {
-      const source = CV.safeAsset(item.image);
-      const media = source
-        ? '<img src="' + CV.esc(source) + '" alt="' + CV.text(item.title) + '">'
-        : '<div class="evidence-fallback">' + CV.icon("document", 28) + "</div>";
-      const date = item.date ? "<p>" + CV.text(item.date) + "</p>" : "";
-      return '<article class="evidence-card">' + media + "<div><p class=\"eyebrow\">" + CV.text(item.type || "") + "</p><h3>" + CV.text(item.title) + "</h3>" + date + "<p>" + CV.text(item.description) + "</p><p><strong>" + CV.esc(CV.i18n.t("case.demonstrates")) + "</strong> " + CV.text(item.demonstrates) + "</p></div></article>";
-    }).join("") + "</div>";
+    if (typeof CV.render.evidenceCards === "function") return CV.render.evidenceCards(items, { prominent: true });
+    return '<p class="empty">' + CV.esc(CV.i18n.t("case.evidenceEmpty")) + "</p>";
   }
 
   CV.render.caseStudy = function (id) {
